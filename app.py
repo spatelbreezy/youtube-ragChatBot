@@ -17,7 +17,9 @@ load_dotenv() #loading .env variables
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 #youtube video url we are going to transcribe
-YOUTUBE_VIDEO = "https://www.youtube.com/watch?v=2DvrRadXwWY"
+print("Make sure the transcription.txt does not already exist if you are transcribing a new video")
+youtube_link = input("Enter the link to the youtube video you would like to transcribe: (Must be valid link)\n")
+YOUTUBE_VIDEO = youtube_link
 
 model = ChatOpenAI(openai_api_key=OPENAI_API_KEY, model="gpt-3.5-turbo")
 parser  = StrOutputParser()
@@ -63,3 +65,12 @@ chain = (
     | model
     | parser
 )
+
+print("Video is transcribed and ready for queries")
+initial_query = input("Ask any question:\n")
+print(chain.invoke(initial_query))
+while True:
+    query = input()
+    if query == "quit" or query == 'q':
+        break
+    print("Response: " + chain.invoke(query))
